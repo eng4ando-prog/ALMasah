@@ -30,7 +30,7 @@ jobs:
           npm install
           npm install @capacitor/core @capacitor/cli @capacitor/android --save
 
-          - name: Build Web App & Clean Config
+      - name: Build Web App & Clean Config
         run: |
           rm -f capacitor.config.ts
           echo '{"appId": "com.almasah.app", "appName": "ALMasah", "webDir": "dist"}' > capacitor.config.json
