@@ -25,8 +25,8 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Install dependencies
-        run: npm install
+      - name: Install dependencies & TypeScript
+        run: npm install && npm install typescript @types/node --save-dev
 
       - name: Build web bundle
         run: npm run build
