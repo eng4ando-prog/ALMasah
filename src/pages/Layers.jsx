@@ -86,7 +86,7 @@ export default function Layers() {
     },
     {
       id: 8,
-      name: 'مواقع المشاريع',
+      name: 'موقع المشاريع',
       type: 'نقطي',
       source: 'إدارة المشاريع',
       visible: true,
@@ -103,6 +103,14 @@ export default function Layers() {
     { label: 'خطي', color: '#3498db', icon: '━' },
     { label: 'مساحي', color: '#27ae60', icon: '■' },
   ];
+
+  const totalMB = layers.reduce((sum, l) => {
+    const match = l.size.match(/^([\d.]+)\s*(\w+)$/);
+    if (!match) return sum;
+    const val = parseFloat(match[1]);
+    const unit = match[2].toUpperCase();
+    return sum + (unit === 'KB' ? val / 1024 : val);
+  }, 0);
 
   return (
     <div dir="rtl" className="min-h-screen bg-[#f0f4f8] text-[#2c3e50] font-sans">
@@ -187,7 +195,70 @@ export default function Layers() {
               <div>
                 <p className="text-sm text-gray-500">الحجم الإجمالي</p>
                 <p className="text-2xl font-bold mt-1">
-                  {(layers.reduce((sum, l) => {
-                    const match = l.size.match(/^([\d.]+)\s*(\w+)$/);
-                    if (!match) return sum;
-                    const val = parseFloat(match[1
+                  {totalMB.toFixed(1)} MB
+                </p>
+              </div>
+              <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Layers Table */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="p-4 border-b border-gray-100 flex items-center justify-between">
+            <h2 className="font-bold text-lg text-[#2c3e50]">قائمة الطبقات</h2>
+            <div className="flex items-center gap-4 text-sm">
+              {legendItems.map((item, index) => (
+                <div key={index} className="flex items-center gap-1.5">
+                  <span style={{ color: item.color }}>{item.icon}</span>
+                  <span className="text-gray-600">{item.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-right text-sm">
+              <thead className="bg-gray-50 text-gray-500 border-b border-gray-100">
+                <tr>
+                  <th className="p-4">اسم الطبقة</th>
+                  <th className="p-4">النوع</th>
+                  <th className="p-4">المصدر</th>
+                  <th className="p-4">المعالم</th>
+                  <th className="p-4">الحجم</th>
+                  <th className="p-4">تاريخ التحديث</th>
+                  <th className="p-4">الشفافية</th>
+                  <th className="p-4">الحالة</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {layers.map((layer) => (
+                  <tr key={layer.id} className="hover:bg-gray-50/50 transition-colors">
+                    <td className="p-4 font-medium text-gray-800 flex items-center gap-2">
+                      <span className="w-3 h-3 rounded-full inline-block" style={{ backgroundColor: layer.color }}></span>
+                      {layer.name}
+                    </td>
+                    <td className="p-4 text-gray-600">{layer.type}</td>
+                    <td className="p-4 text-gray-600">{layer.source}</td>
+                    <td className="p-4 text-gray-600">{layer.features.toLocaleString('ar-EG')}</td>
+                    <td className="p-4 text-gray-600">{layer.size}</td>
+                    <td className="p-4 text-gray-600">{layer.updated}</td>
+                    <td className="p-4 text-gray-600">{layer.opacity}%</td>
+                    <td className="p-4">
+                      <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${layer.visible ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
+                        {layer.visible ? 'ظاهرة' : 'مخفية'}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}
